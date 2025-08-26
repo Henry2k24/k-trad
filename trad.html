@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploring Korean Culture & Modern Korea</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 🎨 Color Palette */
+        :root {
+            --light-beige: #e6ccb2;
+            --warm-tan: #ddb892;
+            --muted-brown: #b08968;
+            --deep-brown: #7f5539;
+        }
+
+        /* General Body & Typography */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-beige);
+            color: var(--deep-brown);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--muted-brown);
+            text-align: center;
+        }
+        
+        section {
+            padding: 50px 20px;
+        }
+
+        /* ------------------------------------- */
+        /* 1. Vertical Navbar */
+        /* ------------------------------------- */
+        .navbar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: var(--warm-tan);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            border-right: 2px solid var(--muted-brown);
+        }
+        .navbar-logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--deep-brown);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .navbar-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        .navbar-links ul li {
+            margin-bottom: 1rem;
+        }
+        .navbar-links a {
+            text-decoration: none;
+            color: var(--deep-brown);
+            font-weight: 500;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .navbar-links a:hover {
+            transform: translateX(10px);
+            background-color: rgba(176, 137, 104, 0.1);
+        }
+        .navbar-links a i {
+            margin-right: 10px;
+        }
+        
+        main {
+            margin-left: 250px; /* Same as navbar width */
+        }
+        
+        /* ------------------------------------- */
+        /* 2. History Timeline */
+        /* ------------------------------------- */
+        #history {
+            background-color: var(--light-beige);
+        }
+        .timeline-container {
+            display: flex;
+            overflow-x: scroll;
+            padding: 30px 0;
+            position: relative;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+            -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+        }
+        .timeline-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari */
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background-color: var(--muted-brown);
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            width: 300px;
+            position: relative;
+            z-index: 2;
+            margin: 0 50px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background-color: var(--b08968);
+            border: 4px solid var(--deep-brown);
+            border-radius: 50%;
+            position: relative;
+            z-index: 3;
+            transition: transform 0.3s ease;
+        }
+        .timeline-item:hover .timeline-dot {
+            transform: scale(1.3);
+        }
+        .timeline-card {
+            background-color: var(--warm-tan);
+            border: 2px solid var(--muted-brown);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .timeline-item:hover .timeline-card {
+            transform: scale(1.05);
+        }
+
+        /* ------------------------------------- */
+        /* 3. Culture & Traditions */
+        /* ------------------------------------- */
+        #culture {
+            background-color: var(--light-beige);
+        }
+        .culture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+        .flip-card {
+            background-color: transparent;
+            height: 400px;
+            perspective: 1000px;
+            border-radius: 12px;
+            position: relative;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .flip-card-front {
+            background-color: var(--warm-tan);
+            color: var(--deep-brown);
+        }
+        .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 12px;
+        }
+        .flip-card-front .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(221, 184, 146, 0.8);
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .flip-card-back {
+            background-color: var(--deep-brown);
+            color: var(--light-beige);
+            transform: rotateY(180deg);
+            text-align: left;
+        }
+
+        
+        /* ------------------------------------- */
+        /* 4. Festivals & Celebrations */
+        /* ------------------------------------- */
+        #festivals {
+            background-color: var(--deep-brown);
+            color: var(--light-beige);
+        }
+        .festivals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+        .festival-card {
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .festival-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .festival-card::before {
+            content: '';
+            
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            backdrop-filter: blur(0.5px);
+        }
+        .festival-card h3, .festival-card p {
+            position: relative;
+            z-index: 2;
+            color: var(--plain-white);
+        }
+        .seollal-bg {
+            background-image: url('https://i.pinimg.com/736x/e8/96/a6/e896a6f88ad8c3fa38c2e32f6feecc6b.jpg') ;
+
+        }
+        .chuseok-bg {
+            background-image: url('https://i.pinimg.com/1200x/68/0c/3b/680c3b26cbfccb2a013d260923f74151.jpg');
+        }
+        .lotus-bg {
+            background-image: url('https://i.pinimg.com/736x/a8/99/51/a89951dcb723eea06c44223b7f7ccbe6.jpg');
+        }
+        /* ------------------------------------- */
+        /* 5. Korean Food */
+        /* ------------------------------------- */
+        #food {
+            background-color: var(--light-beige);
+        }
+        .food-gallery {
+            display: flex;
+            overflow-x: scroll;
+            padding: 20px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .food-gallery::-webkit-scrollbar {
+            display: none;
+        }
+        .food-card {
+            flex-shrink: 0;
+            margin-right: 20px;
+            width: 300px;
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--warm-tan);
+        }
+        .food-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .food-card .fun-fact {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(127, 85, 57, 0.8);
+            color: var(--light-beige);
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .food-card:hover .fun-fact {
+            transform: translateY(0);
+        }
+
+        /* ------------------------------------- */
+        /* 6. Modern Korea & Global Influence */
+        /* ------------------------------------- */
+        #modern {
+            background-color: var(--deep-brown);
+            color: var(--light-beige);
+        }
+        .draggable-slider {
+            display: flex;
+            overflow-x: scroll;
+            cursor: grab;
+            user-select: none;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 20px 0;
+        }
+        .draggable-slider::-webkit-scrollbar {
+            display: none;
+        }
+        .draggable-slider.active {
+            cursor: grabbing;
+        }
+        .drag-card {
+            flex-shrink: 0;
+            margin-right: 20px;
+            width: 350px;
+            height: 250px;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: rgba(221, 184, 146, 0.2);
+            border: 2px solid var(--warm-tan);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .drag-card h3 {
+            color: var(--light-beige);
+        }
+
+        /* ------------------------------------- */
+        /* 7. Fun Fact Generator */
+        /* ------------------------------------- */
+        #facts {
+            background-color: var(--light-beige);
+         
+            text-align: center;
+        }
+        .fun-fact-button {
+            background-color: var(--muted-brown);
+            color: var(--deep-brown);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .fun-fact-button:hover {
+            background-color: var(--muted-brown);
+            color: var(--light-beige);
+            transform: translateY(-5px);
+        }
+        .fact-popup {
+            background-color: var(--warm-tan);
+            color: var(--deep-brown);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: none;
+        }
+        .fact-popup.visible {
+            opacity: 1;
+            transform: scale(1);
+            display: block;
+        }
+
+        /* ------------------------------------- */
+        /* 8. Why I Admire Korea */
+        /* ------------------------------------- */
+        #admire {
+            background-color: var(--light-beige);
+            text-align: center;
+        }
+        #admire p {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .brush-divider {
+            width: 150px;
+            height: 5px;
+            background-color: var(--deep-brown);
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+        .admire-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* ------------------------------------- */
+        /* 9. Unique Footer */
+        /* ------------------------------------- */
+        footer {
+            background-color: var(--deep-brown);
+            color: var(--light-beige);
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .social-icons a {
+            color: var(--light-beige);
+            font-size: 1.8rem;
+            margin: 0 15px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .social-icons a:hover {
+            transform: translateY(-5px) scale(1.1);
+            color: var(--warm-tan);
+        }
+
+        /* ------------------------------------- */
+        /* Responsive Design (Media Queries) */
+        /* ------------------------------------- */
+        /* Mobile phones (max-width: 767px) */
+        @media (max-width: 767px) {
+            .navbar-container {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                padding: 10px 20px;
+                border-bottom: 2px solid var(--muted-brown);
+            }
+            .navbar-logo {
+                font-size: 1.5rem;
+            }
+            .navbar-links {
+                display: none;
+            }
+            main {
+                margin-left: 0;
+            }
+            section {
+                padding: 30px 15px;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            .culture-grid, .festivals-grid {
+                grid-template-columns: 1fr;
+            }
+            .timeline-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .timeline-container::after {
+                height: 100%;
+                width: 4px;
+                top: 0;
+                left: 10px;
+                transform: none;
+            }
+            .timeline-item {
+                width: 100%;
+                flex-direction: row;
+                margin: 20px 0;
+                align-items: center;
+            }
+            .timeline-dot {
+                position: absolute;
+                left: 0;
+            }
+            .timeline-card {
+                margin-top: 0;
+                margin-left: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Title + Vertical Navbar -->
+    <aside class="navbar-container">
+        <div class="navbar-logo">
+            <i class="fas fa-gem"></i> Korea
+        </div>
+        <nav class="navbar-links">
+            <ul>
+                <li><a href="#history"><i class="fas fa-landmark"></i> History Timeline</a></li>
+                <li><a href="#culture"><i class="fas fa-scroll"></i> Culture & Traditions</a></li>
+                <li><a href="#festivals"><i class="fas fa-star"></i> Festivals</a></li>
+                <li><a href="#food"><i class="fas fa-utensils"></i> Korean Food</a></li>
+                <li><a href="#modern"><i class="fas fa-globe-americas"></i> Modern Korea</a></li>
+                <li><a href="#facts"><i class="fas fa-lightbulb"></i> Fun Facts</a></li>
+                <li><a href="#admire"><i class="fas fa-heart"></i> Why I Admire Korea</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <!-- 2. Unique Style Animated History Timeline -->
+        <section id="history">
+            <h2> History Timeline</h2>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <h3>Three Kingdoms Era (57 BCE–668 CE)</h3>
+                        <p>A period where three rival kingdoms, Goguryeo, Baekje, and Silla, battled for control of the Korean peninsula.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <h3>Joseon Dynasty (1392–1897)</h3>
+                        <p>The last and longest-ruling dynastic kingdom of Korea, which established Confucian ideals and saw great cultural advancements.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <h3>Modern Republic (1948-Present)</h3>
+                        <p>Following a period of colonial rule and war, South Korea emerged as a democratic republic with rapid economic growth.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <h3>The Hallyu Wave (1990s-Present)</h3>
+                        <p>The global phenomenon of Korean culture, including K-pop, K-dramas, and cinema, taking the world by storm.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Culture & Traditions -->
+        <section id="culture">
+            <h2>Culture & Traditions</h2>
+            <div class="culture-grid">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="hanbok.jpg" alt="Traditional Korean Hanbok">
+                            <div class="overlay">Hanbok (한복)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>Hanbok</h3>
+                            <p>Hanbok is the traditional Korean dress known for its vibrant colors and simple lines. It is worn for special occasions and ceremonies today.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="hanok.jpg" alt="Traditional Korean Hanok Houses">
+                            <div class="overlay">Hanok Houses</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>Hanok Houses</h3>
+                            <p>Hanok are traditional Korean houses known for their eco-friendly design, with intricate wooden structures and tiled roofs.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="https://i.pinimg.com/736x/cd/32/90/cd3290ff96824abfdeac09b5f4afdeea.jpg" alt="Korean Tea Ceremony">
+                            <div class="overlay">Tea Ceremony</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>Tea Ceremony</h3>
+                            <p>The Korean tea ceremony, a symbol of meditation and respect, is a refined art form that represents harmony and tranquility.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ <!-- 4. Festivals & Celebrations -->
+        <section id="festivals">
+            <h2>Festivals & Celebrations</h2>
+            <div class="festivals-grid">
+                <div class="festival-card seollal-bg">
+                    <h3>Seollal</h3>
+                    <p>Lunar New Year is a time for family reunions and honoring ancestors with traditional food and games.</p>
+                </div>
+                <div class="festival-card chuseok-bg">
+                    <h3>Chuseok</h3>
+                    <p>Known as the Harvest Festival, it's one of Korea's most important holidays, celebrated with family and feasting.</p>
+                </div>
+                <div class="festival-card lotus-bg">
+                    <h3>Lotus Lantern Festival</h3>
+                    <p>A vibrant Buddhist festival celebrating the birth of Buddha with parades of beautiful and colorful lotus lanterns.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Korean Food -->
+        <section id="food">
+            <h2>Korean Food</h2>
+            <div class="food-gallery">
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/1200x/ff/94/40/ff944099cfa3072a27f2ed9b913545c3.jpg" alt="Kimchi">
+                    <div class="fun-fact">A staple side dish of salted and fermented vegetables.</div>
+                </div>
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/736x/cd/f5/10/cdf510df861b364b94da7c901ec47773.jpg" alt="Bibimbap">
+                    <div class="fun-fact">A delicious mixed rice dish with meat and various seasoned vegetables.</div>
+                </div>
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/736x/7a/ff/01/7aff014586ea8984dfadef1843022509.jpg" alt="Bulgogi">
+                    <div class="fun-fact">Thinly sliced, grilled marinated beef, a favorite worldwide.</div>
+                </div>
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/1200x/22/28/c5/2228c5ad809a2b41369829acbc8fb159.jpg" alt="Tteokbokki">
+                    <div class="fun-fact">Spicy rice cakes, a popular street food.</div>
+                </div>
+                <div class="food-card">
+                    <img src="https://i.pinimg.com/1200x/8b/61/9e/8b619e1ef5c606b2e32d51ca821e5714.jpg" alt="Korean BBQ">
+                    <div class="fun-fact">A communal dining experience of grilling meat at the table.</div>
+                </div>
+            </div>
+        </section>
+   <!-- 6. Modern Korea & Global Influence -->
+        <section id="modern">
+            <h2>Modern Korea & Global Influence</h2>
+            <div class="draggable-slider">
+
+                <div class="drag-card tech-bg">
+                    <h3>Korean Technology</h3>
+                    <p>Home to global tech giants like Samsung and LG, known for innovation and cutting-edge products.</p>
+                </div>
+                <div class="drag-card kbeauty-bg">
+                    <h3>K-Beauty</h3>
+                    <p>The Korean beauty industry is a global trendsetter with its focus on skincare and innovative products.</p>
+                </div>
+                  
+                <div class="drag-card kdrama-bg">
+                    <h3>K-Dramas</h3>
+                    <p>Korean television dramas have gained a massive international following with compelling stories.</p>
+                </div> 
+                <div class="drag-card kpop-bg">
+                    <h3>K-Pop</h3>
+                    <p>The global music phenomenon with artists like BTS and Blackpink leading the way.</p>
+                </div>
+             
+                
+            </div>
+        </section>
+
+        <!-- 7. Fun Fact Generator -->
+        <section id="facts">
+            <h2>Fun Fact Generator</h2>
+            <button id="fact-button" class="fun-fact-button">Show me a fun fact 🇰🇷</button>
+            <div id="fact-popup" class="fact-popup">
+                <p id="fact-text"></p>
+            </div>
+            <br>
+            <br>
+            
+            <!-- Cute Button to Fun Facts Page -->
+<a href="bubble.html" 
+   style="display:inline-block; 
+          padding:12px 24px; 
+          background:linear-gradient(135deg, #d4a373, #b08968); 
+          color:#fff; 
+          font-weight:bold; 
+          font-family:'Segoe UI', sans-serif; 
+          text-decoration:none; 
+          border-radius:30px; 
+          box-shadow:0 6px 12px rgba(0,0,0,0.15); 
+          transition:all 0.3s ease; 
+          text-align:center;">
+   🌸 Discover Fun Facts 🌸
+</a>
+
+<!-- Hover Effect Inline -->
+<style>
+a:hover {
+  background: linear-gradient(135deg, #b08968, #7f5539);
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
+</style>
+
+        </section>
+
+        <!-- 8. Why I Admire Korea -->
+        <section id="admire">
+            <h2>Why I Admire Korea</h2>
+            <div class="brush-divider"></div>
+            <p>I admire Korea for its powerful blend of deep-rooted traditions and breakneck-speed innovation. It's a country where ancient palaces stand gracefully beside futuristic skyscrapers, and the reverence for elders coexists with the global youth influence of K-pop. This dynamic harmony between past and future, tradition and modernity, creates a culture that is both respectful and relentlessly forward-thinking, making it a source of endless inspiration.</p>
+            <img class="admire-image" src="https://i.pinimg.com/736x/63/d8/9e/63d89eac418f76a371c5fcdeb10410dd.jpg" alt="An aesthetic image representing Korean culture.">
+        </section>
+    </main>
+
+    <!-- 9. Unique Footer -->
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <p>&copy; 2025 ARZOO MANZOOR. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Fun Fact Generator
+            const factButton = document.getElementById('fact-button');
+            const factPopup = document.getElementById('fact-popup');
+            const factText = document.getElementById('fact-text');
+            const funFacts = [
+            "Koreans love coffee! South Korea has one of the highest coffee consumption rates in Asia, and Seoul is full of unique themed cafés (from book cafés to raccoon cafés).",
+            "",
+                "The Korean alphabet, Hangul, was created in 1443 by King Sejong the Great and is considered one of the most scientific writing systems in the world.",
+                "Kimchi, a traditional fermented vegetable dish, has over 200 varieties and is a staple in Korean cuisine.",
+                "South Korea is home to the world's fastest internet speeds and highest smartphone penetration rate.",
+                "The concept of 'Jeong' (정) is central to Korean culture, representing deep emotional bonds and affection between people.",
+                "Taekwondo, a Korean martial art, is practiced by millions worldwide and is an official Olympic sport.",
+                "The Korean Demilitarized Zone (DMZ) is one of the most heavily fortified borders in the world, separating North and South Korea.",
+                "South Korea has a unique age system where everyone is considered one year old at birth and gains a year on New Year's Day.",
+                "The traditional Korean tea ceremony emphasizes harmony, respect, purity, and tranquility.",
+                "South Korea has the highest number of internet users per capita.",
+                "Kimchi is made with over 200 different ingredients.",
+                "South Korea has the fastest internet in the world.",
+                "Hanbok colors symbolized social class.",
+                "The national anthem is called Aegukga.",
+                "The national flower of South Korea is the Mugunghwa, or Hibiscus.",
+                "South Korea is a leader in technological innovation and robotics.",
+                "The most popular sport in South Korea is taekwondo, a martial art.",
+                "There are more than 2,000 islands off the coast of South Korea.",
+         
+            "South Korea has the highest number of internet users per capita.",
+                "Kimchi is made with over 200 different ingredients.",
+                "South Korea has the fastest internet in the world.",
+                "Hanbok colors symbolized social class.",
+                "The national anthem is called Aegukga.",
+                "The national flower of South Korea is the Mugunghwa, or Hibiscus.",
+                "South Korea is a leader in technological innovation and robotics.",
+                "The most popular sport in South Korea is taekwondo, a martial art.",
+                "There are more than 2,000 islands off the coast of South Korea."
+            ];
+
+            factButton.addEventListener('click', () => {
+                const randomIndex = Math.floor(Math.random() * funFacts.length);
+                factText.textContent = funFacts[randomIndex];
+                factPopup.classList.add('visible');
+            });
+            
+            // Intersection Observer for scroll animations
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            document.querySelectorAll('.timeline-item, .flip-card, .festival-card').forEach(element => {
+                observer.observe(element);
+            });
+
+            // Draggable Slider for Modern Korea
+            const slider = document.querySelector('.draggable-slider');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            const startDrag = (e) => {
+                isDown = true;
+                slider.classList.add('active');
+                startX = (e.pageX || e.touches[0].pageX) - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            };
+
+            const endDrag = () => {
+                isDown = false;
+                slider.classList.remove('active');
+            };
+
+            const moveDrag = (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = (e.pageX || e.touches[0].pageX) - slider.offsetLeft;
+                const walk = (x - startX) * 2; // Scroll-speed
+                slider.scrollLeft = scrollLeft - walk;
+            };
+
+            slider.addEventListener('mousedown', startDrag);
+            slider.addEventListener('mouseleave', endDrag);
+            slider.addEventListener('mouseup', endDrag);
+            slider.addEventListener('mousemove', moveDrag);
+            
+            // Touch events for mobile
+            slider.addEventListener('touchstart', startDrag);
+            slider.addEventListener('touchend', endDrag);
+            slider.addEventListener('touchmove', moveDrag);
+        });
+    </script>
+</body>
+</html>
